@@ -2,6 +2,7 @@ import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
 import { TokenDapp } from '@/components/TokenDapp'
 import { AlephiumConnectButton, useAccount } from '@alephium/web3-react'
+import { tokenFaucetConfig } from '@/services/utils'
 
 export default function Home() {
   const { account } = useAccount()
@@ -17,9 +18,9 @@ export default function Home() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         {!!account && (
-          <div>{account.address}</div>
+          <TokenDapp config={tokenFaucetConfig} />
         )}
-        <TokenDapp />
+
       </div>
     </>
   )
