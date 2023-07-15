@@ -11,9 +11,16 @@
   "infos": {
     "TokenFaucet": {
       "sourceFile": "token.ral",
-      "sourceCodeHash": "16f7789930fffa77f8328c956a95725d336fc84b7002dad00b0a7e8f35199b4b",
+      "sourceCodeHash": "a5fbff9419f76b1f049e0493522fe614bc201531dbb268ead8d4fe2ed8a3f6db",
       "bytecodeDebugPatch": "",
-      "codeHashDebug": "65097f3c9dfbb0b7820d777551a51614b960b012c430ac377a2a647989d8f788",
+      "codeHashDebug": "1e43f2bfb9d9bfcf65d179a90cfde93080a6aca4aed4ba5fe3cc404f15aeec62",
+      "warnings": []
+    },
+    "Withdraw": {
+      "sourceFile": "withdraw.ral",
+      "sourceCodeHash": "222890647d2023a5d4593c0248f24f1bde77b4e1382c30f12e2fbb4ce3ffed1a",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "",
       "warnings": []
     }
   }

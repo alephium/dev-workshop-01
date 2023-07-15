@@ -34,6 +34,7 @@ export namespace TokenFaucetTypes {
     name: HexString;
     decimals: bigint;
     supply: bigint;
+    balance: bigint;
   };
 
   export type State = ContractState<Fields>;
@@ -52,6 +53,10 @@ export namespace TokenFaucetTypes {
       result: CallContractResult<HexString>;
     };
     getDecimals: {
+      params: Omit<CallContractParams<{}>, "args">;
+      result: CallContractResult<bigint>;
+    };
+    getBalance: {
       params: Omit<CallContractParams<{}>, "args">;
       result: CallContractResult<bigint>;
     };
@@ -111,6 +116,19 @@ class Factory extends ContractFactory<
     ): Promise<TestContractResult<bigint>> => {
       return testMethod(this, "getDecimals", params);
     },
+    getBalance: async (
+      params: Omit<
+        TestContractParams<TokenFaucetTypes.Fields, never>,
+        "testArgs"
+      >
+    ): Promise<TestContractResult<bigint>> => {
+      return testMethod(this, "getBalance", params);
+    },
+    withdraw: async (
+      params: TestContractParams<TokenFaucetTypes.Fields, { amount: bigint }>
+    ): Promise<TestContractResult<null>> => {
+      return testMethod(this, "withdraw", params);
+    },
   };
 }
 
@@ -119,7 +137,7 @@ export const TokenFaucet = new Factory(
   Contract.fromJson(
     TokenFaucetContractJson,
     "",
-    "65097f3c9dfbb0b7820d777551a51614b960b012c430ac377a2a647989d8f788"
+    "1e43f2bfb9d9bfcf65d179a90cfde93080a6aca4aed4ba5fe3cc404f15aeec62"
   )
 );
 
@@ -174,6 +192,17 @@ export class TokenFaucetInstance extends ContractInstance {
         TokenFaucet,
         this,
         "getDecimals",
+        params === undefined ? {} : params,
+        getContractByCodeHash
+      );
+    },
+    getBalance: async (
+      params?: TokenFaucetTypes.CallMethodParams<"getBalance">
+    ): Promise<TokenFaucetTypes.CallMethodResult<"getBalance">> => {
+      return callMethod(
+        TokenFaucet,
+        this,
+        "getBalance",
         params === undefined ? {} : params,
         getContractByCodeHash
       );
