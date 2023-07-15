@@ -90,5 +90,9 @@ describe('integration tests', () => {
     await sleep(3000)
     expect(withDrawEvents.length).toEqual(10)
     subscription.unsubscribe()
+
+    // Guess token type
+    const tokenType = await signer.nodeProvider.guessStdTokenType(tokenFaucet.contractId)
+    expect(tokenType).toEqual('fungible')
   }, 0)
 })
