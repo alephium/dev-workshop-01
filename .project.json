@@ -9,11 +9,18 @@
     "ignoreCheckExternalCallerWarnings": false
   },
   "infos": {
+    "IFungibleToken": {
+      "sourceFile": "../node_modules/@alephium/web3/std/fungible_token_interface.ral",
+      "sourceCodeHash": "6809cb06fb20fa7edf529461998beeebd12b1636d439612cca2f84214dbf4a20",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "",
+      "warnings": []
+    },
     "TokenFaucet": {
       "sourceFile": "token.ral",
-      "sourceCodeHash": "a5fbff9419f76b1f049e0493522fe614bc201531dbb268ead8d4fe2ed8a3f6db",
-      "bytecodeDebugPatch": "",
-      "codeHashDebug": "1e43f2bfb9d9bfcf65d179a90cfde93080a6aca4aed4ba5fe3cc404f15aeec62",
+      "sourceCodeHash": "05ff7562868ecf68aa0187eb1af34354862730236a7d4c851f07e95301bad1e8",
+      "bytecodeDebugPatch": "=20-2+67=101+3a0007e02=1+75468652063757272656e742062616c616e63652069732000=46",
+      "codeHashDebug": "a3309aa3a0dbd0c53b67a0c422316dcbc0571d8fa5f9ea2ab374b5c110f4efe2",
       "warnings": []
     },
     "Withdraw": {

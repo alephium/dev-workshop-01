@@ -39,11 +39,9 @@ export namespace TokenFaucetTypes {
 
   export type State = ContractState<Fields>;
 
+  export type WithdrawEvent = ContractEvent<{ to: Address; amount: bigint }>;
+
   export interface CallMethodTable {
-    getTotalSupply: {
-      params: Omit<CallContractParams<{}>, "args">;
-      result: CallContractResult<bigint>;
-    };
     getSymbol: {
       params: Omit<CallContractParams<{}>, "args">;
       result: CallContractResult<HexString>;
@@ -53,6 +51,10 @@ export namespace TokenFaucetTypes {
       result: CallContractResult<HexString>;
     };
     getDecimals: {
+      params: Omit<CallContractParams<{}>, "args">;
+      result: CallContractResult<bigint>;
+    };
+    getTotalSupply: {
       params: Omit<CallContractParams<{}>, "args">;
       result: CallContractResult<bigint>;
     };
@@ -79,19 +81,13 @@ class Factory extends ContractFactory<
   TokenFaucetInstance,
   TokenFaucetTypes.Fields
 > {
+  consts = { ErrorCodes: { InvalidWithdrawAmount: BigInt(0) } };
+
   at(address: string): TokenFaucetInstance {
     return new TokenFaucetInstance(address);
   }
 
   tests = {
-    getTotalSupply: async (
-      params: Omit<
-        TestContractParams<TokenFaucetTypes.Fields, never>,
-        "testArgs"
-      >
-    ): Promise<TestContractResult<bigint>> => {
-      return testMethod(this, "getTotalSupply", params);
-    },
     getSymbol: async (
       params: Omit<
         TestContractParams<TokenFaucetTypes.Fields, never>,
@@ -116,6 +112,14 @@ class Factory extends ContractFactory<
     ): Promise<TestContractResult<bigint>> => {
       return testMethod(this, "getDecimals", params);
     },
+    getTotalSupply: async (
+      params: Omit<
+        TestContractParams<TokenFaucetTypes.Fields, never>,
+        "testArgs"
+      >
+    ): Promise<TestContractResult<bigint>> => {
+      return testMethod(this, "getTotalSupply", params);
+    },
     getBalance: async (
       params: Omit<
         TestContractParams<TokenFaucetTypes.Fields, never>,
@@ -136,8 +140,8 @@ class Factory extends ContractFactory<
 export const TokenFaucet = new Factory(
   Contract.fromJson(
     TokenFaucetContractJson,
-    "",
-    "1e43f2bfb9d9bfcf65d179a90cfde93080a6aca4aed4ba5fe3cc404f15aeec62"
+    "=20-2+67=101+3a0007e02=1+75468652063757272656e742062616c616e63652069732000=46",
+    "a3309aa3a0dbd0c53b67a0c422316dcbc0571d8fa5f9ea2ab374b5c110f4efe2"
   )
 );
 
@@ -151,18 +155,24 @@ export class TokenFaucetInstance extends ContractInstance {
     return fetchContractState(TokenFaucet, this);
   }
 
+  async getContractEventsCurrentCount(): Promise<number> {
+    return getContractEventsCurrentCount(this.address);
+  }
+
+  subscribeWithdrawEvent(
+    options: SubscribeOptions<TokenFaucetTypes.WithdrawEvent>,
+    fromCount?: number
+  ): EventSubscription {
+    return subscribeContractEvent(
+      TokenFaucet.contract,
+      this,
+      options,
+      "Withdraw",
+      fromCount
+    );
+  }
+
   methods = {
-    getTotalSupply: async (
-      params?: TokenFaucetTypes.CallMethodParams<"getTotalSupply">
-    ): Promise<TokenFaucetTypes.CallMethodResult<"getTotalSupply">> => {
-      return callMethod(
-        TokenFaucet,
-        this,
-        "getTotalSupply",
-        params === undefined ? {} : params,
-        getContractByCodeHash
-      );
-    },
     getSymbol: async (
       params?: TokenFaucetTypes.CallMethodParams<"getSymbol">
     ): Promise<TokenFaucetTypes.CallMethodResult<"getSymbol">> => {
@@ -192,6 +202,17 @@ export class TokenFaucetInstance extends ContractInstance {
         TokenFaucet,
         this,
         "getDecimals",
+        params === undefined ? {} : params,
+        getContractByCodeHash
+      );
+    },
+    getTotalSupply: async (
+      params?: TokenFaucetTypes.CallMethodParams<"getTotalSupply">
+    ): Promise<TokenFaucetTypes.CallMethodResult<"getTotalSupply">> => {
+      return callMethod(
+        TokenFaucet,
+        this,
+        "getTotalSupply",
         params === undefined ? {} : params,
         getContractByCodeHash
       );

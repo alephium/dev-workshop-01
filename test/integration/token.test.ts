@@ -1,6 +1,6 @@
-import { web3, Project, stringToHex, ONE_ALPH, DUST_AMOUNT } from '@alephium/web3'
+import { web3, Project, stringToHex, ONE_ALPH, DUST_AMOUNT, sleep } from '@alephium/web3'
 import { testNodeWallet } from '@alephium/web3-test'
-import { TokenFaucet, Withdraw } from '../../artifacts/ts'
+import { TokenFaucet, TokenFaucetTypes, Withdraw } from '../../artifacts/ts'
 
 describe('integration tests', () => {
   beforeAll(async () => {
@@ -34,10 +34,10 @@ describe('integration tests', () => {
     expect(getTotalSupplyResult.returns).toEqual(100n)
 
     const multicallResult = await tokenFaucet.multicall({
-      getTotalSupply: {},
       getSymbol: {},
       getName: {},
       getDecimals: {},
+      getTotalSupply: {},
       getBalance: {}
     })
     expect(multicallResult.getDecimals.returns).toEqual(0n)
@@ -60,6 +60,20 @@ describe('integration tests', () => {
     expect(balanceResult.tokenBalances).toEqual([{ id: tokenFaucet.contractId, amount: '100' }])
     expect(BigInt(balanceResult.balance)).toEqual(ONE_ALPH)
 
+    const withDrawEvents: TokenFaucetTypes.WithdrawEvent[] = []
+    const subscription = tokenFaucet.subscribeWithdrawEvent({
+      pollingInterval: 500,
+      messageCallback: async (event: TokenFaucetTypes.WithdrawEvent) => {
+        withDrawEvents.push(event)
+        return Promise.resolve()
+      },
+      errorCallback: async (error, subscription) => {
+        console.error(error)
+        subscription.unsubscribe()
+        return Promise.resolve()
+      }
+    })
+
     const initialBalance = tokenFaucetStates.fields.balance
     // Call `withdraw` function 10 times
     for (let i = 0; i < 10; i++) {
@@ -72,5 +86,9 @@ describe('integration tests', () => {
       const newBalance = newState.fields.balance
       expect(newBalance).toEqual(initialBalance - BigInt(i) - 1n)
     }
-  })
+
+    await sleep(3000)
+    expect(withDrawEvents.length).toEqual(10)
+    subscription.unsubscribe()
+  }, 0)
 })
